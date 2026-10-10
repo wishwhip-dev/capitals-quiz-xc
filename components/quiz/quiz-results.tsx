@@ -145,18 +145,3 @@ export function QuizResults({ round, answers, outcome, saveError, onPlayAgain, o
     </div>
   );
 }
-
-/** The share card: score, verdict, app name. Drawn ahead of the press, works for 0/10 too. */
-async function renderShareCardFor({ score, total, verdict, best }: { score: number; total: number; verdict: string; best: number | null }) {
-  const { renderShareCard } = await import("@/lib/share");
-  return renderShareCard({
-    title: `${score} / ${total}`,
-    subtitle: verdict,
-    lines: [
-      `${QUESTIONS_PER_ROUND} capitals, one round`,
-      best === null ? "First round played" : `Best score: ${best}/${total}`,
-    ],
-    footer: identity.name,
-    format: "story",
-  });
-}
