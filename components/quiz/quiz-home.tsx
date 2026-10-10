@@ -109,7 +109,9 @@ export function QuizHome({ onStart }: QuizHomeProps) {
             ) : null}
             {transfer.state.kind === "imported" ? (
               <p className="text-sm text-muted-foreground" aria-live="polite">
-                Loaded: {transfer.state.result.added} table{transfer.state.result.added === 1 ? "" : "s"} of data.
+                Loaded: {transfer.state.result.rows} row{transfer.state.result.rows === 1 ? "" : "s"} across{" "}
+                {Object.keys(transfer.state.result.tables).length} table
+                {Object.keys(transfer.state.result.tables).length === 1 ? "" : "s"}.
               </p>
             ) : null}
           </div>
