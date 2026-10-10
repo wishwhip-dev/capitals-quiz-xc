@@ -3,21 +3,32 @@
  *
  * The reusable half of the setup is in `lib/storage/` and is not edited. This file is the half
  * that describes the product: which tables exist, what is indexed, how the schema has changed over
- * time, and what a first visit starts with.
+ * time. This is the app's first schema, so it ships as version 1 — the starter's example tables
+ * were replaced, not migrated away from.
  *
- * **The schema below is an example and nobody has data in it.** If you are building this
- * application for the first time, replace the tables in version 1 with your own, rename the
- * database, and replace or delete the seed alongside them — do not add a version 2 that drops
- * `notes`. The "never edit a shipped version" rule in `docs/storage.md` binds from your first
- * deployment onward, not before it.
+ * Tables:
+ * - `rounds` — one row per finished quiz round, newest first by `playedAt`. A round is recorded
+ *   only when it is finished; a reload mid-quiz writes nothing.
+ * - `stats` — single-row key/value store holding the best score. Kept separately from the rounds
+ *   so "beating your best" stays true even if history were ever trimmed.
  */
 import { defineDatabase } from "@/lib/storage/database";
 
-export type Note = {
+/** One finished round of the quiz. */
+export type Round = {
   id: string;
-  title: string;
-  body: string;
-  /** Epoch millis. Indexed, because the list is ordered by it. */
+  /** Right answers out of `total`. */
+  score: number;
+  total: number;
+  /** Epoch millis. Indexed, because the history list is ordered by it. */
+  playedAt: number;
+};
+
+/** The single row holding the visitor's best score. */
+export type BestScore = {
+  id: "best";
+  score: number;
+  total: number;
   updatedAt: number;
 };
 
@@ -26,36 +37,21 @@ export function newId(): string {
   return globalThis.crypto?.randomUUID?.() ?? `${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
 }
 
-/** What a first visit opens to. An app that opens empty looks broken. */
-const SAMPLE_NOTES: Note[] = [
-  {
-    id: "sample-welcome",
-    title: "This note came with the app",
-    body: "It was written once, on your first visit. Delete it and it stays deleted — the seed does not refill a list you emptied on purpose.",
-    updatedAt: Date.now(),
-  },
-  {
-    id: "sample-storage",
-    title: "Everything here lives in this browser",
-    body: "No account, no sync, no other visitor can see it. Export to a file to carry it anywhere else.",
-    updatedAt: Date.now() - 60_000,
-  },
-];
-
-export const database = defineDatabase<{ notes: Note }>({
-  // Part of the origin's storage identity. Renaming it does not migrate anything — it points the
-  // application at a different, empty database and abandons the old one in place. That is exactly
-  // what you want on a first build, and never what you want afterwards.
-  name: "starter-app",
+export const database = defineDatabase<{ rounds: Round; stats: BestScore }>({
+  // Part of the origin's storage identity. Renamed for this app's first release, which points it
+  // at its own empty database rather than the starter example's.
+  name: "capital-cities-quiz",
   versions: [
-    // Only the primary key and the properties queried on. `title` and `body` are stored but never
+    // Only the primary key and the properties queried on. `score` and `total` are stored but never
     // filtered or sorted by, so indexing them would cost writes and buy nothing.
-    { version: 1, stores: { notes: "id, updatedAt" } },
+    {
+      version: 1,
+      stores: {
+        rounds: "id, playedAt",
+        stats: "id",
+      },
+    },
   ],
-  // Written once, inside `ready()`, in one transaction with its own marker. Do not hand-roll this:
-  // no `meta` table, no flag, no promise to dedupe a double mount — see `docs/storage.md`.
-  seed: {
-    tables: ["notes"],
-    run: async (db) => { await db.notes.bulkAdd(SAMPLE_NOTES); },
-  },
+  // No seed on purpose: an empty history is a real state the home screen draws ("No rounds yet"),
+  // not a gap to fill with example content.
 });

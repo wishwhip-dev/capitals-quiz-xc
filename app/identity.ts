@@ -6,7 +6,7 @@
  */
 export const identity = {
   name: "Capital cities quiz",
-  description: "A quick quiz on world capitals: 10 questions, multiple choice, a score at the end with a Share result button that posts an image card of my score, and a…",
+  description: "A quick quiz on world capitals: ten multiple-choice questions, a score at the end, and your best round kept in the browser.",
   accent: "#c2410c",
   initial: "C",
 } as const;
