@@ -41,14 +41,12 @@ export type RoundOutcome = {
 export async function recordRound(score: number, total: number): Promise<RoundOutcome> {
   const db = await database.ready();
   const round: Round = { id: newId(), score, total, playedAt: Date.now() };
-  return db.transaction("rw", db.rounds, db.stats, async (tx) => {
-    const roundsTable = tx.table("rounds") as unknown as typeof db.rounds;
-    const statsTable = tx.table("stats") as unknown as typeof db.stats;
-    await roundsTable.add(round);
-    const current = (await statsTable.get("best")) ?? null;
+  return db.transaction("rw", db.rounds, db.stats, async () => {
+    await db.rounds.add(round);
+    const current = (await db.stats.get("best")) ?? null;
     if (!current || score > current.score) {
       const best: BestScore = { id: "best", score, total, updatedAt: Date.now() };
-      await statsTable.put(best);
+      await db.stats.put(best);
       return { best, isNewBest: true, matchedBest: false };
     }
     return { best: current, isNewBest: false, matchedBest: score === current.score };
