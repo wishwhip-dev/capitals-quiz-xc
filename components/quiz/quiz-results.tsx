@@ -10,7 +10,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { identity } from "@/app/identity";
 import type { RoundOutcome } from "@/lib/data/quiz-records";
-import { QUESTIONS_PER_ROUND, scoreRound, verdictFor, type Question } from "@/lib/quiz";
+import { QUESTIONS_PER_ROUND, verdictFor, scoreRound, type Question } from "@/lib/quiz";
+import { renderShareCard } from "@/lib/share";
 import { cn } from "@/lib/utils";
 
 export type QuizResultsProps = {
