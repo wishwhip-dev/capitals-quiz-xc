@@ -117,20 +117,10 @@ export function QuizHome({ onStart }: QuizHomeProps) {
             accept="application/json,.json"
             maxBytes={2_000_000}
             label="Load a backup file"
-            onFiles={(files, rejected) => {
-              for (const { file, reason } of rejected) {
-                console.warn(`Not loaded: ${file.name} — ${reason}.`);
-              }
+            onFiles={(files) => {
               const file = files[0];
               if (!file) return;
-              void (async () => {
-                try {
-                  await readAsJson(file);
-                } catch (error) {
-                  console.warn(`Could not read ${file.name}: ${error instanceof Error ? error.message : "unreadable file"}.`);
-                }
-                await transfer.importFromFile(file, "replace");
-              })();
+              void transfer.importFromFile(file, "replace");
             }}
           />
         </CardContent>
