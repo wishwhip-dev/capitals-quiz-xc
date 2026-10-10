@@ -33,11 +33,15 @@ export function QuizResults({ round, answers, outcome, saveError, onPlayAgain, o
 
   const makeImage = useCallback(
     () =>
-      renderShareCardFor({
-        score,
-        total,
-        verdict,
-        best: best?.score ?? null,
+      renderShareCard({
+        title: `${score} / ${total}`,
+        subtitle: verdict,
+        lines: [
+          `${QUESTIONS_PER_ROUND} capitals, one round`,
+          best === null ? "First round played" : `Best score: ${best}/${total}`,
+        ],
+        footer: identity.name,
+        format: "story",
       }),
     [score, total, verdict, best],
   );
