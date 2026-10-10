@@ -50,11 +50,11 @@ export function QuizPlay({ round, onFinish, onQuit }: QuizPlayProps) {
     if (finished.current) return;
     if (index >= round.length - 1) {
       finished.current = true;
-      onFinish(answersRef.current);
+      onFinish(answers);
       return;
     }
     setIndex(index + 1);
-  }, [index, round.length, onFinish]);
+  }, [index, answers, round.length, onFinish]);
 
   // The reveal is brief: the right capital shows, then the next question arrives on its own.
   useEffect(() => {
