@@ -80,6 +80,8 @@ export function QuizResults({ round, answers, outcome, saveError, onPlayAgain, o
       <div className="flex flex-col gap-3">
         <ShareButton
           label="Share result"
+          /* ShareButton styles its wrapper; this reaches the button inside it. */
+          className="[&>button]:min-h-11"
           cacheKey={`${score}/${total}/${best?.score ?? "none"}`}
           title={`I scored ${score} / ${total} on ${identity.name}`}
           text={`${verdict} — ${score} out of ${total} on ${identity.name}.`}

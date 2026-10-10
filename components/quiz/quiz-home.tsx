@@ -119,6 +119,8 @@ export function QuizHome({ onStart }: QuizHomeProps) {
             accept="application/json,.json"
             maxBytes={2_000_000}
             label="Load a backup file"
+            /* FileDrop styles the drop zone; this reaches the chooser button inside it. */
+            className="[&>button]:min-h-11"
             onFiles={(files) => {
               const file = files[0];
               if (!file) return;
