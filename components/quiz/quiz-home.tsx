@@ -16,7 +16,6 @@ import { database } from "@/lib/db";
 import { getBestScore, listRecentRounds } from "@/lib/data/quiz-records";
 import { COUNTRY_COUNT } from "@/lib/data/countries";
 import { QUESTIONS_PER_ROUND } from "@/lib/quiz";
-import { readAsJson } from "@/lib/files";
 
 export type QuizHomeProps = {
   onStart: () => void;
