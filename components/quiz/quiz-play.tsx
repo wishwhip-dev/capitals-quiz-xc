@@ -27,8 +27,6 @@ export function QuizPlay({ round, onFinish, onQuit }: QuizPlayProps) {
   const [index, setIndex] = useState(0);
   const [answers, setAnswers] = useState<(string | null)[]>(() => round.map(() => null));
   const finished = useRef(false);
-  const answersRef = useRef(answers);
-  answersRef.current = answers;
 
   const question = round[index];
   const picked = answers[index];
